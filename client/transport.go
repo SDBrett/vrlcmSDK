@@ -22,9 +22,9 @@ func NewDefaultSdkTransport(skipCertVerify bool) http.Transport {
 }
 
 // Default Http client configuration
-func NewDefaultSdkClient(t http.Transport) http.Client {
+func NewDefaultSdkClient(t http.RoundTripper) http.Client {
 	c := &http.Client{
-		Transport: &t,
+		Transport: t,
 	}
 
 	return *c

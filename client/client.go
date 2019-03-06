@@ -24,7 +24,7 @@ type LoginResponse struct {
 func (s *SdkClient) Login(u, p string) error {
 
 	t := NewDefaultSdkTransport(s.IgnoreCertError)
-	c := NewDefaultSdkClient(t)
+	c := NewDefaultSdkClient(&t)
 	url := s.BaseUrl + "/login"
 
 	body := CreateLoginRequestBody(u, p)
