@@ -8,7 +8,7 @@ import (
 )
 
 //Default Http transport configuration
-func NewDefaultSdkTransport(skipCertVerify bool) http.Transport {
+func NewDefaultSdkTransport(skipCertVerify bool) http.RoundTripper {
 	t := &http.Transport{
 		DialContext: (&net.Dialer{
 			Timeout:   10 * time.Second,
@@ -18,14 +18,17 @@ func NewDefaultSdkTransport(skipCertVerify bool) http.Transport {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: skipCertVerify},
 	}
 
-	return *t
+	return t
 }
 
-// Default Http client configuration
-func NewDefaultSdkClient(t http.RoundTripper) http.Client {
-	c := &http.Client{
-		Transport: t,
+func NewApiClient(options ...func(*ApiClient)) (*ApiClient, error) {
+	c := http.Client{}
+
+	client := ApiClient{Client: c}
+
+	for _, option := range options {
+		option(&client)
 	}
 
-	return *c
+	return &client, nil
 }

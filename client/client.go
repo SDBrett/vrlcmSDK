@@ -11,20 +11,28 @@ type Client interface {
 	Login(u, p string) error
 }
 
-type SdkClient struct {
+type SdkConnection struct {
 	BaseUrl         string
 	Token           string
 	IgnoreCertError bool
+}
+
+type ApiClient struct {
+	Client http.Client
 }
 
 type LoginResponse struct {
 	Token string `json:"token"`
 }
 
-func (s *SdkClient) Login(u, p string) error {
+func (s *SdkConnection) Login(u, p string) error {
 
-	t := NewDefaultSdkTransport(s.IgnoreCertError)
-	c := NewDefaultSdkClient(&t)
+	t := func(c *ApiClient) {
+		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
+	}
+
+	c, _ := NewApiClient(t)
+
 	url := s.BaseUrl + "/login"
 
 	body := CreateLoginRequestBody(u, p)
@@ -34,7 +42,7 @@ func (s *SdkClient) Login(u, p string) error {
 		return err
 	}
 
-	response, err := c.Do(req)
+	response, err := c.Client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -51,7 +59,7 @@ func (s *SdkClient) Login(u, p string) error {
 	return nil
 }
 
-func loginResponse(r *http.Response, s *SdkClient) error {
+func loginResponse(r *http.Response, s *SdkConnection) error {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

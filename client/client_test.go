@@ -2,13 +2,15 @@ package client
 
 import (
 	"bytes"
-	"crypto/tls"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
+	"net/http/httptest"
 	"testing"
-	"time"
+)
+
+const (
+	okResponse = "TOKENCODE"
 )
 
 func TestValidateHttpResponse(t *testing.T) {
@@ -45,40 +47,31 @@ func TestCreateLoginRequestBody(t *testing.T) {
 
 }
 
-func TestNewDefaultSdkTransport(t *testing.T) {
+func TestDoStuffWithRoundTripper(t *testing.T) {
 
-	testValues := []bool{true, false}
-
-	for _, i := range testValues {
-		transport := NewDefaultSdkTransport(i)
-
-		if transport.TLSClientConfig.InsecureSkipVerify != i {
-			t.Errorf("InsecureVerify set to: %t, expected %t", transport.TLSClientConfig.InsecureSkipVerify, i)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body := `{"token":"TOKENCODE"}`
+		_, err := fmt.Fprintln(w, body)
+		if err != nil {
+			t.Fatal(err)
 		}
-	}
-}
+	}))
 
-func TestNewDefaultSdkClient(t *testing.T) {
+	defer ts.Close()
 
-	trans := MockNewDefaultSdkTransport(false)
-
-	c := NewDefaultSdkClient(&trans)
-
-	if c.Transport == nil {
-		t.Errorf("Expected transport not to be nil")
-
-	}
-}
-
-func MockNewDefaultSdkTransport(skipCertVerify bool) http.Transport {
-	t := &http.Transport{
-		DialContext: (&net.Dialer{
-			Timeout:   10 * time.Second,
-			KeepAlive: 90 * time.Second,
-			DualStack: true,
-		}).DialContext,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: skipCertVerify},
+	res, err := http.Get(ts.URL)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	return *t
+	l := &SdkConnection{BaseUrl: "https://192.168.17.145/lcm/api/v1", IgnoreCertError: true}
+
+	err = loginResponse(res, l)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if l.Token != okResponse {
+		t.Fatalf("Expected response of %s but received %s", okResponse, l.Token)
+	}
 }
