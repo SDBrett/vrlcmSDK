@@ -1,4 +1,4 @@
-package client
+package vrlcmSdk
 
 import (
 	"crypto/tls"
