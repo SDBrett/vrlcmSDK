@@ -49,10 +49,11 @@ func TestDoStuffWithRoundTripper(t *testing.T) {
 
 	l := &SdkConnection{BaseUrl: "https://192.168.17.145/lcm/api/v1", IgnoreCertError: true}
 
-	err = getLoginResponse(res, l)
+	token, err := getAuthToken(res)
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println(token)
 
 	if l.Token != okResponse {
 		t.Fatalf("Expected response of %s but received %s", okResponse, l.Token)
