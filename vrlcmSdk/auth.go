@@ -7,20 +7,24 @@ import (
 	"net/http"
 )
 
+// This struct is used for marshalling the response body returned from the login API call
 type LoginResponse struct {
+	//Token holds the returned token code
 	Token string `json:"token"`
 }
 
+// Creates the request body used for the login API call
 func CreateLoginRequestBody(u, p string) []byte {
 	bodyString := `{"username":"` + u + `", "password":"` + p + `"}`
 	return []byte(bodyString)
 }
 
-func getLoginResponse(r *http.Response, s *SdkConnection) error {
+//
+func getAuthToken(r *http.Response) (string, error) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	loginResponse := LoginResponse{}
@@ -28,12 +32,10 @@ func getLoginResponse(r *http.Response, s *SdkConnection) error {
 	err = json.Unmarshal(body, &loginResponse)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	s.Token = loginResponse.Token
-
-	return nil
+	return loginResponse.Token, nil
 
 }
 
@@ -63,7 +65,7 @@ func (s *SdkConnection) Login(u, p string) error {
 	if err != nil {
 		return err
 	}
-	err = getLoginResponse(response, s)
+	s.Token, err = getAuthToken(response)
 	if err != nil {
 		return err
 	}
