@@ -8,7 +8,7 @@ import (
 
 func ValidateHttpResponse(r http.Response) error {
 
-	if r.StatusCode != 200 {
+	if r.StatusCode >= 300 {
 		b, _ := ioutil.ReadAll(r.Body)
 		err := errors.New(string(b))
 		return err
@@ -24,3 +24,4 @@ func (s *SdkConnection) newSdkHeaders() {
 
 	s.headers = h
 }
+
