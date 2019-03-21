@@ -24,4 +24,3 @@ func (s *SdkConnection) newSdkHeaders() {
 
 	s.headers = h
 }
-

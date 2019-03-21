@@ -12,7 +12,6 @@ const (
 	okResponse = "TOKENCODE"
 )
 
-
 func TestCreateLoginRequestBody(t *testing.T) {
 
 	username := "admin@localhost"

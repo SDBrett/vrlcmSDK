@@ -8,14 +8,9 @@ type SdkConnection struct {
 	BaseUrl         string
 	Token           string
 	IgnoreCertError bool
-	Client http.Client
-	headers	http.Header
+	Client          http.Client
+	headers         http.Header
 }
-
-
-
-
-
 
 /*
 // TODO Add result parsing and return statement
@@ -47,8 +42,3 @@ func (s *SdkConnection) GetDataCenters() error {
 }
 
 */
-
-
-
-
-

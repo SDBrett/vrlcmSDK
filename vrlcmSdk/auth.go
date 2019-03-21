@@ -73,7 +73,6 @@ func (s *SdkConnection) Login(u, p string) error {
 	return nil
 }
 
-
 func (s *SdkConnection) Logout() error {
 
 	t := func(c *SdkConnection) {
@@ -84,8 +83,7 @@ func (s *SdkConnection) Logout() error {
 
 	url := s.BaseUrl + "/logout"
 
-
-	req, err := http.NewRequest("POST", url, nil )
+	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return err
 	}
