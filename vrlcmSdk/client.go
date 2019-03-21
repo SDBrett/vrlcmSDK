@@ -7,19 +7,14 @@ import (
 	"net/http"
 )
 
-type Client interface {
-	Login(u, p string) error
-}
-
 type SdkConnection struct {
 	BaseUrl         string
 	Token           string
 	IgnoreCertError bool
+	Client http.Client
+	headers	http.Header
 }
 
-type ApiClient struct {
-	Client http.Client
-}
 
 type LoginResponse struct {
 	Token string `json:"token"`
@@ -27,7 +22,7 @@ type LoginResponse struct {
 
 func (s *SdkConnection) Login(u, p string) error {
 
-	t := func(c *ApiClient) {
+	t := func(c *SdkConnection) {
 		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
 	}
 
@@ -51,15 +46,19 @@ func (s *SdkConnection) Login(u, p string) error {
 	if err != nil {
 		return err
 	}
-	err = loginResponse(response, s)
+	err = getLoginResponse(response, s)
 	if err != nil {
 		return err
 	}
 
+	s.newSdkHeaders()
+
 	return nil
 }
 
-func loginResponse(r *http.Response, s *SdkConnection) error {
+
+
+func getLoginResponse(r *http.Response, s *SdkConnection) error {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -87,18 +86,65 @@ func CreateLoginRequestBody(u, p string) []byte {
 
 /*
 // TODO Add result parsing and return statement
-func (c *Client) GetDataCenter() error {
-	url := c.baseURL + "/view/datacenter"
+func (s *SdkConnection) GetDataCenters() error {
 
+	t := func(c *SdkConnection) {
+		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
+	}
 
-	resp, err := c.httpClient.Get(url)
+	c, _ := NewApiClient(t)
+
+	url := s.BaseUrl + "/view/datacenter"
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
 
-	defer Close(resp.Body)
+	response, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	err = ValidateHttpResponse(*response)
+	if err != nil {
+		return err
+	}
+
+}
+
+*/
+
+
+func (s *SdkConnection) Logout() error {
+
+	t := func(c *SdkConnection) {
+		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
+	}
+
+	c, _ := NewApiClient(t)
+
+	url := s.BaseUrl + "/logout"
+
+
+	req, err := http.NewRequest("POST", url, nil )
+	if err != nil {
+		return err
+	}
+	req.Header = s.headers
+
+	response, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	err = ValidateHttpResponse(*response)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-*/
+
+

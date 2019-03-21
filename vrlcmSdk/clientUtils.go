@@ -15,3 +15,12 @@ func ValidateHttpResponse(r http.Response) error {
 	}
 	return nil
 }
+
+func (s *SdkConnection) newSdkHeaders() {
+
+	h := http.Header{}
+	h.Add("x-xenon-auth-token", s.Token)
+	h.Add("Content-Type", "application/json")
+
+	s.headers = h
+}

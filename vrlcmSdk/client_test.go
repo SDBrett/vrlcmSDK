@@ -66,7 +66,7 @@ func TestDoStuffWithRoundTripper(t *testing.T) {
 
 	l := &SdkConnection{BaseUrl: "https://192.168.17.145/lcm/api/v1", IgnoreCertError: true}
 
-	err = loginResponse(res, l)
+	err = getLoginResponse(res, l)
 	if err != nil {
 		t.Fatal(err)
 	}

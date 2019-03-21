@@ -21,10 +21,10 @@ func NewDefaultSdkTransport(skipCertVerify bool) http.RoundTripper {
 	return t
 }
 
-func NewApiClient(options ...func(*ApiClient)) (*ApiClient, error) {
+func NewApiClient(options ...func(*SdkConnection)) (*SdkConnection, error) {
 	c := http.Client{}
 
-	client := ApiClient{Client: c}
+	client := SdkConnection{Client: c}
 
 	for _, option := range options {
 		option(&client)
