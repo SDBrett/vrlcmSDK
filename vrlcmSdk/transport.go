@@ -32,3 +32,16 @@ func NewApiClient(options ...func(*SdkConnection)) (*SdkConnection, error) {
 
 	return &client, nil
 }
+
+func (s *SdkConnection) newDefaultClient() {
+
+	// Setup http transport using default transport
+	t := func(c *SdkConnection) {
+		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
+	}
+
+	// Create new http client
+	c, _ := NewApiClient(t)
+
+	s.Client = c.Client
+}

@@ -44,13 +44,7 @@ func getAuthToken(r *http.Response) (string, error) {
 // Adds auth token string to the SdkConnection
 func (s *SdkConnection) Login(u, p string) error {
 
-	// Setup http transport using default transport
-	t := func(c *SdkConnection) {
-		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
-	}
-
-	// Create new http client
-	c, _ := NewApiClient(t)
+	s.newDefaultClient()
 
 	url := s.BaseUrl + "/login"
 	body := CreateLoginRequestBody(u, p)
@@ -60,7 +54,7 @@ func (s *SdkConnection) Login(u, p string) error {
 		return err
 	}
 
-	response, err := c.Client.Do(req)
+	response, err := s.Client.Do(req)
 	if err != nil {
 		return err
 	}
