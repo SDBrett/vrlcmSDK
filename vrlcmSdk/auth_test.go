@@ -17,7 +17,6 @@ func TestSdkConnection_Login(t *testing.T) {
 				w.Header().Add("Content-Type", "application/json")
 				w.Write([]byte(responseBody))
 			}
-
 		}),
 	)
 	defer ts.Close()

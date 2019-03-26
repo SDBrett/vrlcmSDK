@@ -6,17 +6,19 @@ import (
 	"testing"
 )
 
-func TestSdkConnection_GetDatacenters(t *testing.T) {
-
+func TestDatacenters_GetDatacenters(t *testing.T) {
 
 	responseBody := `[{"id": "12345", "name": "test"}]`
-	
+
 	// Mock http server
 	ts := httptest.NewServer(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/login" {
+			if r.URL.Path == "/view/datacenter" {
 				w.Header().Add("Content-Type", "application/json")
-				w.Write([]byte(responseBody))
+				_, err := w.Write([]byte(responseBody))
+				if err != nil {
+					t.Errorf("error response: %s", err)
+				}
 			}
 
 		}),
@@ -25,19 +27,14 @@ func TestSdkConnection_GetDatacenters(t *testing.T) {
 
 	var c SdkConnection
 	c = SdkConnection{BaseUrl: ts.URL, IgnoreCertError: true}
-	c.Token = "test"
+	c.Token = "authToken"
 	c.newSdkHeaders()
-	d, err := c.GetDatacenters()
-	
-	
-	if err != nil {
-		t.Errorf("no error response")
-	}
-	if d.Datacenter == nil {
-		t.Errorf("expected token code %s, received %s", "authToken", c.Token)
-	}
-}
+	c.newDefaultClient()
 
-func TestGet()  {
-	
+	var d Datacenters
+	err := d.GetDatacenters(c)
+	if err != nil {
+		t.Errorf("error response: %s", err)
+	}
+
 }
