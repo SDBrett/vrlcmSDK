@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/SDBrett/vrlcmsdk/client"
+	"github.com/sdbrett/vrlcmsdk/client"
 	"log"
 )
 
