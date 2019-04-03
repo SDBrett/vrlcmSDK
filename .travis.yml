@@ -1,6 +1,6 @@
 language: go
 sudo: false
-go_import_path: github.com/sdbrett/harbor/vrlcmSDK
+go_import_path: github.com/sdbrett/vrlcmSDK
 go:
   - tip
 before_install:
