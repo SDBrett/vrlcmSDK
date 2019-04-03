@@ -1,4 +1,4 @@
-package vrlcmSdk
+package client
 
 import (
 	"io"

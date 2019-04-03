@@ -9,4 +9,4 @@
 // to simplify interaction with the products API.
 //
 // The project is not supplied or supported by VMware and support is community based.
-package vrlcmSdk
+package client

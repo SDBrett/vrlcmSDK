@@ -2,21 +2,21 @@ package main
 
 import (
 	"fmt"
-	"github.com/SDBrett/vrlcmSDK/vrlcmSdk"
+	"github.com/SDBrett/vrlcmSDK/client"
 	"log"
 )
 
 func main() {
 
-	var c vrlcmSdk.SdkConnection
-	c = vrlcmSdk.SdkConnection{BaseUrl: "https://192.168.17.145/lcm/api/v1", IgnoreCertError: true}
+	var c client.SdkConnection
+	c = client.SdkConnection{BaseUrl: "https://192.168.17.145/lcm/api/v1", IgnoreCertError: true}
 
 	err := c.Login("admin@localhost", "vmware")
 	if err != nil {
 		fmt.Println(err)
 	}
 	//fmt.Println(c)
-	var d vrlcmSdk.Datacenters
+	var d client.Datacenters
 	err = d.GetDatacenters(c)
 	if err != nil {
 		log.Fatalf("received error: %s", err)
