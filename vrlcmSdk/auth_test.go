@@ -1,8 +1,8 @@
 package vrlcmSdk
 
 import (
-	"github.com/goharbor/harbor/src/common/utils/log"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
