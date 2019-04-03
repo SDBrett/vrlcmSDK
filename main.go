@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/goharbor/harbor/src/common/utils/log"
-	"vrlcmSDK/vrlcmSdk"
+	"github.com/vrlcmSDK/vrlcmSdk"
+	"log"
 )
 
 func main() {
@@ -16,10 +16,10 @@ func main() {
 		fmt.Println(err)
 	}
 	//fmt.Println(c)
-	var d  vrlcmSdk.Datacenters
+	var d vrlcmSdk.Datacenters
 	err = d.GetDatacenters(c)
 	if err != nil {
-		log.Errorf("received error: %s", err)
+		log.Fatalf("received error: %s", err)
 	}
 	fmt.Println(d.Datacenter[0].ID)
 
