@@ -39,7 +39,7 @@ func TestSdkConnection_Login(t *testing.T) {
 				w.Header().Add("Content-Type", "application/json")
 				_, err := w.Write([]byte(responseBody))
 				if err != nil {
-					log.Errorf("Error writing response")
+					log.Fatalf("Error writing response")
 				}
 			}
 			if r.URL.Path == "/fail/login" {
