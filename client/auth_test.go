@@ -11,7 +11,10 @@ import (
 func TestGetAuthToken(t *testing.T) {
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "<html><body>Hello World!</body></html>")
+		_, err := io.WriteString(w, "<html><body>Hello World!</body></html>")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
