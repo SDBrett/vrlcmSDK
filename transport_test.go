@@ -1,4 +1,4 @@
-package client
+package vrlcmsdk
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ func TestNewDefaultSdkTransport(t *testing.T) {
 
 	for _, i := range testCases {
 
-		rt := NewDefaultSdkTransport(i)
+		rt := NewDefaultApiTransport(i)
 		tr, ok := rt.(*http.Transport)
 
 		if !ok {

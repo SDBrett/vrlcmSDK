@@ -1,4 +1,4 @@
-package client
+package vrlcmsdk
 
 import (
 	"bytes"
@@ -41,12 +41,10 @@ func getAuthToken(r *http.Response) (string, error) {
 }
 
 // Performs authentication function with vRLCM server
-// Adds auth token string to the SdkConnection
-func (s *SdkConnection) Login(u, p string) error {
+// Adds auth token string to the ApiClient
+func (c *ApiClient) Login(u, p string) error {
 
-	s.newDefaultClient()
-
-	url := s.BaseUrl + "/login"
+	url := c.basePath + "/login"
 	body := CreateLoginRequestBody(u, p)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
@@ -54,7 +52,7 @@ func (s *SdkConnection) Login(u, p string) error {
 		return err
 	}
 
-	response, err := s.Client.Do(req)
+	response, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -63,37 +61,29 @@ func (s *SdkConnection) Login(u, p string) error {
 	if err != nil {
 		return err
 	}
-	s.Token, err = getAuthToken(response)
+	c.token, err = getAuthToken(response)
 	if err != nil {
 		return err
 	}
 
-	// Create new headers for SDK connection which will contain the auth token
-	s.newSdkHeaders()
+	c.addAuthHeader()
 
 	return nil
 }
 
 // Performs logout action against vRLCM server
-func (s *SdkConnection) Logout() error {
+func (c *ApiClient) Logout() error {
 
-	// Setup http transport using default transport
-	t := func(c *SdkConnection) {
-		c.Client.Transport = NewDefaultSdkTransport(s.IgnoreCertError)
-	}
-
-	// Create new http client
-	c, _ := NewApiClient(t)
-
-	url := s.BaseUrl + "/logout"
+	url := c.basePath + "/logout"
 
 	req, err := http.NewRequest("POST", url, nil)
+	req.Header = *c.headers
+
 	if err != nil {
 		return err
 	}
-	req.Header = s.headers
 
-	response, err := c.Client.Do(req)
+	response, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}

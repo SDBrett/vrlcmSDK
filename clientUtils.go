@@ -1,4 +1,4 @@
-package client
+package vrlcmsdk
 
 import (
 	"errors"
@@ -16,11 +16,17 @@ func ValidateHttpResponse(r http.Response) error {
 	return nil
 }
 
-func (s *SdkConnection) newSdkHeaders() {
+func (c *ApiClient) setDefaultHeaders() {
 
-	h := http.Header{}
-	h.Add("x-xenon-auth-token", s.Token)
+	h := &http.Header{}
+	h.Add("Accept", "application/json")
 	h.Add("Content-Type", "application/json")
 
-	s.headers = h
+	c.headers = h
+}
+
+func (c *ApiClient) addAuthHeader() {
+
+	c.headers.Add("x-xenon-auth-token", c.token)
+
 }
