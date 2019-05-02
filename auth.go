@@ -61,6 +61,7 @@ func (c *ApiClient) Login(u, p string) error {
 	if err != nil {
 		return err
 	}
+
 	c.token, err = getAuthToken(response)
 	if err != nil {
 		return err
@@ -75,10 +76,9 @@ func (c *ApiClient) Login(u, p string) error {
 func (c *ApiClient) Logout() error {
 
 	url := c.basePath + "/logout"
-
 	req, err := http.NewRequest("POST", url, nil)
-	req.Header = *c.headers
 
+	req.Header = *c.headers
 	if err != nil {
 		return err
 	}
