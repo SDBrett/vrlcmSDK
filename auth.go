@@ -2,6 +2,7 @@ package vrlcmsdk
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -42,7 +43,7 @@ func getAuthToken(r *http.Response) (string, error) {
 
 // Performs authentication function with vRLCM server
 // Adds auth token string to the ApiClient
-func (c *ApiClient) Login(u, p string) error {
+func (c *ApiClient) Login(ctx context.Context, u, p string) error {
 
 	url := c.basePath + "/login"
 	body := CreateLoginRequestBody(u, p)
@@ -73,7 +74,7 @@ func (c *ApiClient) Login(u, p string) error {
 }
 
 // Performs logout action against vRLCM server
-func (c *ApiClient) Logout() error {
+func (c *ApiClient) Logout(ctx context.Context) error {
 
 	url := c.basePath + "/logout"
 	req, err := http.NewRequest("POST", url, nil)

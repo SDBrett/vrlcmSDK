@@ -1,13 +1,14 @@
 package vrlcmsdk
 
 import (
+	"context"
 	"github.com/sdbrett/vrlcmsdk/datacenter"
 	"net/http"
 )
 
 type DatacenterAPIService service
 
-func (dc *DatacenterAPIService) GetAllDatacenters() (*datacenter.Datacenters, error) {
+func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (*datacenter.Datacenters, error) {
 
 	url := dc.client.basePath + "/view/datacenter"
 	d := datacenter.Datacenters{}
@@ -31,7 +32,7 @@ func (dc *DatacenterAPIService) GetAllDatacenters() (*datacenter.Datacenters, er
 	for k := range d.Datacenter {
 
 		id := d.Datacenter[k].ID
-		d.Datacenter[k], err = dc.GetDatacenter(id)
+		d.Datacenter[k], err = dc.GetDatacenter(ctx, id)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +45,7 @@ func (dc *DatacenterAPIService) GetAllDatacenters() (*datacenter.Datacenters, er
 
 }
 
-func (dc *DatacenterAPIService) GetDatacenter(id string) (datacenter.Datacenter, error) {
+func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (datacenter.Datacenter, error) {
 
 	url := dc.client.basePath + "/view/datacenter?datacenterId=" + id
 	d := datacenter.Datacenter{}
@@ -55,8 +56,7 @@ func (dc *DatacenterAPIService) GetDatacenter(id string) (datacenter.Datacenter,
 	}
 
 	req.Header = *dc.client.headers
-
-	r, err := dc.client.httpClient.Do(req)
+	r, err := dc.client.do(ctx, req, &d)
 	if err != nil {
 		return d, err
 	}

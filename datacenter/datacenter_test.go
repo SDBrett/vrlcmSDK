@@ -1,10 +1,14 @@
-package datacenter
 
+package datacenter
+/*
 import (
+	"context"
+	"github.com/sdbrett/vrlcmsdk"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
+var ctx = context.Background()
 
 func TestDatacenters_GetDatacenters(t *testing.T) {
 
@@ -29,14 +33,10 @@ func TestDatacenters_GetDatacenters(t *testing.T) {
 	defer ts.Close()
 
 	t.Run("OK Process", func(t *testing.T) {
-		var c SdkConnection
-		c = SdkConnection{BaseUrl: ts.URL, IgnoreCertError: true}
-		c.Token = "authToken"
-		c.newSdkHeaders()
-		c.newDefaultClient()
+		c := vrlcmsdk.NewApiClient("https://192.168.17.128", true, nil)
 
-		var d Datacenters
-		err := d.GetDatacenters(c)
+		datacenters := err := c.DatacenterService.GetAllDatacenters(ctx)
+
 		if err != nil {
 			t.Errorf("error response: %s", err)
 		}
@@ -90,3 +90,4 @@ func TestDatacenters_GetDatacenters2(t *testing.T) {
 	})
 
 }
+*/

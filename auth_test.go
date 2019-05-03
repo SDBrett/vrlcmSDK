@@ -1,12 +1,15 @@
 package vrlcmsdk
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
+
+var ctx = context.Background()
 
 func TestCreateLoginRequestBody(t *testing.T) {
 
@@ -68,7 +71,7 @@ func TestApiClient_Login(t *testing.T) {
 		ignoreSSL := true
 		c := NewApiClient(ts.URL, ignoreSSL, nil)
 
-		err := c.Login("admin@localhost", "vmware")
+		err := c.Login(ctx, "admin@localhost", "vmware")
 		if err != nil {
 			t.Errorf("no error response")
 		}
@@ -84,7 +87,7 @@ func TestApiClient_Login(t *testing.T) {
 
 		c := NewApiClient(uri, ignoreSSL, nil)
 
-		err := c.Login("admin@localhost", "vmware")
+		err := c.Login(ctx,"admin@localhost", "vmware")
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
@@ -96,7 +99,7 @@ func TestApiClient_Login(t *testing.T) {
 		uri := ts.URL + "/404"
 		c := NewApiClient(uri, ignoreSSL, nil)
 
-		err := c.Login("username", "password")
+		err := c.Login(ctx,"username", "password")
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
@@ -127,7 +130,7 @@ func TestApiClient_Logout(t *testing.T) {
 
 		ignoreSSL := true
 		c := NewApiClient(ts.URL, ignoreSSL, nil)
-		err := c.Logout()
+		err := c.Logout(ctx)
 		if err != nil {
 			t.Errorf("no error response")
 		}
@@ -138,7 +141,7 @@ func TestApiClient_Logout(t *testing.T) {
 		ignoreSSL := true
 
 		c := NewApiClient(uri, ignoreSSL, nil)
-		err := c.Logout()
+		err := c.Logout(ctx)
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
@@ -150,7 +153,7 @@ func TestApiClient_Logout(t *testing.T) {
 		ignoreSSL := true
 
 		c := NewApiClient(uri, ignoreSSL, nil)
-		err := c.Logout()
+		err := c.Logout(ctx)
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
@@ -162,7 +165,7 @@ func TestApiClient_Logout(t *testing.T) {
 		ignoreSSL := true
 
 		c := NewApiClient(uri, ignoreSSL, nil)
-		err := c.Logout()
+		err := c.Logout(ctx)
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
