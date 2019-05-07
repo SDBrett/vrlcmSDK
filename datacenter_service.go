@@ -56,12 +56,12 @@ func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (d
 	}
 
 	req.Header = *dc.client.headers
-	r, err := dc.client.do(ctx, req, &d)
+	r, err := dc.client.httpClient.Do(req)
 	if err != nil {
 		return d, err
 	}
+	defer r.Body.Close()
 
-	//var d *datacenter.Datacenter
 	d, err = datacenter.GetDatacenterResponse(r)
 	if err != nil {
 		return d, err

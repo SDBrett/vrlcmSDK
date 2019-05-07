@@ -21,14 +21,14 @@ func CreateLoginRequestBody(u, p string) []byte {
 }
 
 // Retrieves auth token from login API call response
-func getAuthToken(r *http.Response) (string, error) {
+func getAuthToken(r http.Response) (string, error) {
 
 	// Parse response body
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return "", err
 	}
-
+	//defer r.Body.Close()
 	// Marshall response body into loginResponse struct
 	loginResponse := LoginResponse{}
 	err = json.Unmarshal(body, &loginResponse)
@@ -57,13 +57,13 @@ func (c *ApiClient) Login(ctx context.Context, u, p string) error {
 	if err != nil {
 		return err
 	}
-
+	defer response.Body.Close()
 	err = ValidateHttpResponse(*response)
 	if err != nil {
 		return err
 	}
 
-	c.token, err = getAuthToken(response)
+	c.token, err = getAuthToken(*response)
 	if err != nil {
 		return err
 	}
@@ -88,6 +88,7 @@ func (c *ApiClient) Logout(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	defer response.Body.Close()
 
 	err = ValidateHttpResponse(*response)
 	if err != nil {

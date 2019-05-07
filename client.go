@@ -9,6 +9,13 @@ import (
 	"net/url"
 )
 
+type apiResponse struct {
+	body       io.ReadCloser
+	header     http.Header
+	statusCode int
+	reqURL     *url.URL
+}
+
 type ApiClient struct {
 	basePath      string
 	cmsPath       string
@@ -61,8 +68,6 @@ func (c *ApiClient) do(ctx context.Context, req *http.Request, v interface{}) (*
 
 		return nil, err
 	}
-	defer resp.Body.Close()
-
 	err = json.NewDecoder(resp.Body).Decode(v)
 	return resp, err
 }
@@ -74,11 +79,4 @@ func (c *ApiClient) checkResponseError(r apiResponse) error {
 
 	// TODO Add parsing of response
 	return fmt.Errorf("received error response code %d", r.statusCode)
-}
-
-type apiResponse struct {
-	body       io.ReadCloser
-	header     http.Header
-	statusCode int
-	reqURL     *url.URL
 }
