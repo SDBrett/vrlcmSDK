@@ -2,53 +2,36 @@ package vrlcmsdk
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/pkg/errors"
 	"github.com/sdbrett/vrlcmsdk/datacenter"
+	"github.com/sdbrett/vrlcmsdk/types"
 	"net/http"
 )
 
 type DatacenterAPIService service
 
-func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (*datacenter.Datacenters, error) {
+func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
 
 	url := dc.client.basePath + "/view/datacenter"
-	d := datacenter.Datacenters{}
+	d := types.Datacenters{}
 
-	req, err := http.NewRequest("GET", url, nil)
+	resp, err := dc.client.get(ctx, url, *dc.client.headers)
+
 	if err != nil {
-		return nil, err
+		return d, err
 	}
 
-	req.Header = *dc.client.headers
-	r, err := dc.client.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	d.Datacenter, err = datacenter.GetDatacentersResponse(r)
-	if err != nil {
-		return nil, err
-	}
-
-	for k := range d.Datacenter {
-
-		id := d.Datacenter[k].ID
-		d.Datacenter[k], err = dc.GetDatacenter(ctx, id)
-		if err != nil {
-			return nil, err
-		}
-
-		d.Datacenter[k].ID = id
-
-	}
-
-	return &d, nil
+	err = json.NewDecoder(resp.body).Decode(&d.Datacenter)
+	ensureReaderClosed(resp)
+	return d, nil
 
 }
 
-func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (datacenter.Datacenter, error) {
+func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (types.Datacenter, error) {
 
 	url := dc.client.basePath + "/view/datacenter?datacenterId=" + id
-	d := datacenter.Datacenter{}
+	d := types.Datacenter{}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -68,5 +51,32 @@ func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (d
 	}
 
 	return d, nil
+
+}
+
+func (dc *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter) error {
+
+	url := dc.client.basePath + "/action/create/datacenter"
+	var tempDC types.Datacenter
+	if d.Name == "" {
+		err := errors.New("Datacenter name cannot be empty")
+		return err
+	}
+
+	resp, err := dc.client.post(ctx, url, d, *dc.client.headers)
+
+	if err != nil {
+		return err
+	}
+
+	err = json.NewDecoder(resp.body).Decode(&tempDC)
+	if err != nil {
+		return err
+	}
+
+	d.ID = tempDC.ID
+	ensureReaderClosed(resp)
+
+	return nil
 
 }

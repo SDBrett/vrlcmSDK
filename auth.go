@@ -43,9 +43,9 @@ func getAuthToken(r http.Response) (string, error) {
 
 // Performs authentication function with vRLCM server
 // Adds auth token string to the ApiClient
-func (c *ApiClient) Login(ctx context.Context, u, p string) error {
+func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 
-	url := c.basePath + "/login"
+	url := cli.basePath + "/login"
 	body := CreateLoginRequestBody(u, p)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
@@ -53,7 +53,7 @@ func (c *ApiClient) Login(ctx context.Context, u, p string) error {
 		return err
 	}
 
-	response, err := c.httpClient.Do(req)
+	response, err := cli.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -63,28 +63,28 @@ func (c *ApiClient) Login(ctx context.Context, u, p string) error {
 		return err
 	}
 
-	c.token, err = getAuthToken(*response)
+	cli.token, err = getAuthToken(*response)
 	if err != nil {
 		return err
 	}
 
-	c.addAuthHeader()
+	cli.addAuthHeader()
 
 	return nil
 }
 
 // Performs logout action against vRLCM server
-func (c *ApiClient) Logout(ctx context.Context) error {
+func (cli *ApiClient) Logout(ctx context.Context) error {
 
-	url := c.basePath + "/logout"
+	url := cli.basePath + "/logout"
 	req, err := http.NewRequest("POST", url, nil)
 
-	req.Header = *c.headers
+	req.Header = *cli.headers
 	if err != nil {
 		return err
 	}
 
-	response, err := c.httpClient.Do(req)
+	response, err := cli.httpClient.Do(req)
 	if err != nil {
 		return err
 	}

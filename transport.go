@@ -21,8 +21,8 @@ func NewDefaultApiTransport(skipCertVerify bool) http.RoundTripper {
 	return t
 }
 
-func (c *ApiClient) newDefaultClient() {
+func (cli *ApiClient) newDefaultClient() {
 
-	c.httpClient = &http.Client{Transport: NewDefaultApiTransport(c.AllowInsecure)}
+	cli.httpClient = &http.Client{Transport: NewDefaultApiTransport(cli.AllowInsecure)}
 
 }

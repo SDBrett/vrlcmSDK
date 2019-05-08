@@ -16,17 +16,17 @@ func ValidateHttpResponse(r http.Response) error {
 	return nil
 }
 
-func (c *ApiClient) setDefaultHeaders() {
+func (cli *ApiClient) setDefaultHeaders() {
 
 	h := &http.Header{}
 	h.Add("Accept", "application/json")
 	h.Add("Content-Type", "application/json")
 
-	c.headers = h
+	cli.headers = h
 }
 
-func (c *ApiClient) addAuthHeader() {
+func (cli *ApiClient) addAuthHeader() {
 
-	c.headers.Add("x-xenon-auth-token", c.token)
+	cli.headers.Add("x-xenon-auth-token", cli.token)
 
 }
