@@ -1,20 +1,8 @@
 package vrlcmsdk
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 )
-
-type apiResponse struct {
-	body       io.ReadCloser
-	header     http.Header
-	statusCode int
-	reqURL     *url.URL
-}
 
 type ApiClient struct {
 	basePath      string
@@ -53,30 +41,4 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 	c.DatacenterService = &DatacenterAPIService{client: c}
 
 	return *c
-}
-
-func (c *ApiClient) do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
-	req = req.WithContext(ctx)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		select {
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		default:
-		}
-
-		return nil, err
-	}
-	err = json.NewDecoder(resp.Body).Decode(v)
-	return resp, err
-}
-
-func (c *ApiClient) checkResponseError(r apiResponse) error {
-	if r.statusCode >= 200 && r.statusCode < 400 {
-		return nil
-	}
-
-	// TODO Add parsing of response
-	return fmt.Errorf("received error response code %d", r.statusCode)
 }
