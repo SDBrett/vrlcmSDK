@@ -167,25 +167,6 @@ func (cli *ApiClient) checkResponseErr(serverResp serverResponse) error {
 	return errors.Wrap(errors.New(errorMessage), "Error response from daemon")
 }
 
-/*
-func (cli *ApiClient) addHeaders(req *http.Request, headers headers) *http.Request {
-	// Add CLI Config's HTTP Headers BEFORE we set the Docker headers
-	// then the user can't change OUR headers
-	for k, v := range cli.customHTTPHeaders {
-		if versions.LessThan(cli.version, "1.25") && k == "User-Agent" {
-			continue
-		}
-		req.Header.Set(k, v)
-	}
-
-	if headers != nil {
-		for k, v := range headers {
-			req.Header[k] = v
-		}
-	}
-	return req
-}
-*/
 func encodeData(data interface{}) (*bytes.Buffer, error) {
 	params := bytes.NewBuffer(nil)
 	if data != nil {
