@@ -1,6 +1,7 @@
 package vrlcmsdk
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +13,7 @@ func TestCreateLoginRequestBody(t *testing.T) {
 }
 func TestApiClient_Login(t *testing.T) {
 
+	var ctx = context.Background()
 	authToken := "TOKENCODE"
 
 	responseBody := `{"Token": "` + authToken + `"}`
@@ -81,6 +83,7 @@ func TestApiClient_Login(t *testing.T) {
 
 func TestApiClient_Logout(t *testing.T) {
 
+	var ctx = context.Background()
 	// Mock http server
 	ts := httptest.NewServer(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
