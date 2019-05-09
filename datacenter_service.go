@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
-	"github.com/sdbrett/vrlcmsdk/datacenter"
 	"github.com/sdbrett/vrlcmsdk/types"
-	"net/http"
 )
 
 type DatacenterAPIService service
@@ -33,19 +31,12 @@ func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (t
 	url := dc.client.basePath + "/view/datacenter?datacenterId=" + id
 	d := types.Datacenter{}
 
-	req, err := http.NewRequest("GET", url, nil)
+	resp, err := dc.client.get(ctx, url, *dc.client.headers)
 	if err != nil {
 		return d, err
 	}
 
-	req.Header = *dc.client.headers
-	r, err := dc.client.httpClient.Do(req)
-	if err != nil {
-		return d, err
-	}
-	defer r.Body.Close()
-
-	d, err = datacenter.GetDatacenterResponse(r)
+	err = json.NewDecoder(resp.body).Decode(&d)
 	if err != nil {
 		return d, err
 	}
