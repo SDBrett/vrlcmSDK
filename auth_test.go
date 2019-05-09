@@ -1,43 +1,15 @@
 package vrlcmsdk
 
 import (
-	"context"
-	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-var ctx = context.Background()
-
 func TestCreateLoginRequestBody(t *testing.T) {
 
 }
-
-func TestGetAuthToken(t *testing.T) {
-
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		_, err := io.WriteString(w, "<html><body>Hello World!</body></html>")
-		if err != nil {
-			t.Errorf("Error creating handler")
-		}
-
-	}
-
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
-
-	_, err := getAuthToken(resp)
-	if err == nil {
-		t.Errorf("Expected error")
-	}
-
-}
-
 func TestApiClient_Login(t *testing.T) {
 
 	authToken := "TOKENCODE"
@@ -87,7 +59,7 @@ func TestApiClient_Login(t *testing.T) {
 
 		c := NewApiClient(uri, ignoreSSL, nil)
 
-		err := c.Login(ctx,"admin@localhost", "vmware")
+		err := c.Login(ctx, "admin@localhost", "vmware")
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
@@ -99,7 +71,7 @@ func TestApiClient_Login(t *testing.T) {
 		uri := ts.URL + "/404"
 		c := NewApiClient(uri, ignoreSSL, nil)
 
-		err := c.Login(ctx,"username", "password")
+		err := c.Login(ctx, "username", "password")
 		if err == nil {
 			t.Errorf("expected error response, no response received")
 		}
