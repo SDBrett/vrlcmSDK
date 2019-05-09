@@ -20,7 +20,7 @@ func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 	}
 
 	loginToken := types.LoginResponse{}
-	err = json.NewDecoder(resp.body).Decode(loginToken)
+	err = json.NewDecoder(resp.body).Decode(&loginToken)
 	if err != nil {
 		return err
 	}
