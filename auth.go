@@ -1,73 +1,30 @@
 package vrlcmsdk
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
+	"github.com/sdbrett/vrlcmsdk/types"
 )
-
-// This struct is used for marshalling the response body returned from the login API call
-type LoginResponse struct {
-	//Token holds the returned token code
-	Token string `json:"token"`
-}
-
-// Creates the request body used for the login API call
-func CreateLoginRequestBody(u, p string) []byte {
-	bodyString := `{"username":"` + u + `", "password":"` + p + `"}`
-	return []byte(bodyString)
-}
-
-// Retrieves auth token from login API call response
-func getAuthToken(r http.Response) (string, error) {
-
-	// Parse response body
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return "", err
-	}
-	//defer r.Body.Close()
-	// Marshall response body into loginResponse struct
-	loginResponse := LoginResponse{}
-	err = json.Unmarshal(body, &loginResponse)
-	if err != nil {
-		return "", err
-	}
-
-	// Return token code
-	return loginResponse.Token, nil
-
-}
 
 // Performs authentication function with vRLCM server
 // Adds auth token string to the ApiClient
 func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 
 	url := cli.basePath + "/login"
-	body := CreateLoginRequestBody(u, p)
+	body := types.LoginBody{Username: u, Password: p}
+	// body := CreateLoginRequestBody(u, p)
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	resp, err := cli.post(ctx, url, body, *cli.headers)
 	if err != nil {
 		return err
 	}
 
-	response, err := cli.httpClient.Do(req)
+	loginToken := types.LoginResponse{}
+	err = json.NewDecoder(resp.body).Decode(loginToken)
 	if err != nil {
 		return err
 	}
-	defer response.Body.Close()
-	err = ValidateHttpResponse(*response)
-	if err != nil {
-		return err
-	}
-
-	cli.token, err = getAuthToken(*response)
-	if err != nil {
-		return err
-	}
-
+	cli.token = loginToken.Token
 	cli.addAuthHeader()
 
 	return nil
@@ -77,20 +34,8 @@ func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 func (cli *ApiClient) Logout(ctx context.Context) error {
 
 	url := cli.basePath + "/logout"
-	req, err := http.NewRequest("POST", url, nil)
 
-	req.Header = *cli.headers
-	if err != nil {
-		return err
-	}
-
-	response, err := cli.httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer response.Body.Close()
-
-	err = ValidateHttpResponse(*response)
+	_, err := cli.post(ctx, url, nil, *cli.headers)
 	if err != nil {
 		return err
 	}
