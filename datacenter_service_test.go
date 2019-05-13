@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/goharbor/harbor/src/common/utils/log"
 	"github.com/sdbrett/vrlcmsdk/types"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"testing"
@@ -21,7 +21,7 @@ func getMockDatacenteres() []types.Datacenter {
 
 	err := json.Unmarshal(dcbyte, &dcArray)
 	if err != nil {
-		log.Errorf("error marshalling datacenters")
+		log.Println("error marshalling datacenters")
 	}
 
 	return dcArray

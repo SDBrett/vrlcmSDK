@@ -22,7 +22,6 @@ type service struct {
 
 func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClient {
 
-	//var c ApiClient
 	c := &ApiClient{
 		AllowInsecure: ignoreSSL,
 		Host:          host,
@@ -37,7 +36,6 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 	}
 
 	c.setDefaultHeaders()
-
 	c.DatacenterService = &DatacenterAPIService{client: c}
 
 	return *c
