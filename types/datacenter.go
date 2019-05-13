@@ -11,5 +11,5 @@ type Datacenter struct {
 	Latitude  string `json:"latitude, omitempty"`
 	Longitude string `json:"longitude, omitempty"`
 	State     string `json:"state, omitempty"`
-	Vcenters  string `json:"vCenters, omitempty"`
+	Vcenters  []Vcenter `json:"vCenters, omitempty"`
 }
