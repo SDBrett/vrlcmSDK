@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// API client for interaction with LCM
 type ApiClient struct {
 	basePath      string
 	cmsPath       string
@@ -14,12 +15,15 @@ type ApiClient struct {
 	headers       *http.Header
 
 	DatacenterService *DatacenterAPIService
+	VcenterService *VcenterAPIService
 }
 
+// Defines services
 type service struct {
 	client *ApiClient
 }
 
+// Create new API client
 func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClient {
 
 	c := &ApiClient{
