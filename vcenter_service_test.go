@@ -47,8 +47,7 @@ func TestVcenterAPIService_Create(t *testing.T) {
 		}
 	})
 
-
-	t.Run("Test bad JSON decoding", func(t *testing.T) {
+	t.Run("Test server error response", func(t *testing.T) {
 
 		serverResponse := `{"message":"A vCenter with the provided name is already attached to this data center. Use PATCH operation to update the vCenter details.","messageId":"12706","statusCode":400,"documentKind":"com:vmware:xenon:common:ServiceErrorResponse","errorCode":0}`
 		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
@@ -74,7 +73,7 @@ func TestVcenterAPIService_Create(t *testing.T) {
 		}
 	})
 
-	t.Run("Test server response error for vCenter creation", func(t *testing.T) {
+	t.Run("Test bad JSON decoding ", func(t *testing.T) {
 
 		serverResponse := "TEST"
 		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
