@@ -11,12 +11,12 @@ import (
 
 type DatacenterAPIService service
 
-func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
+func (service *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
 
-	url := dc.client.basePath + "/view/datacenter"
+	url := service.client.basePath + "/view/datacenter"
 	d := types.Datacenters{}
 
-	resp, err := dc.client.get(ctx, url, *dc.client.headers)
+	resp, err := service.client.get(ctx, url, *service.client.headers)
 
 	if err != nil {
 		return d, err
@@ -27,7 +27,7 @@ func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Da
 
 	for x, i := range d.Datacenter {
 		id := i.ID
-		d.Datacenter[x], err = dc.GetDatacenter(ctx, id)
+		d.Datacenter[x], err = service.GetDatacenter(ctx, id)
 		if err != nil {
 			log.Printf("received error getting datacenter for datacenter id %s", id)
 			return d, err
@@ -39,12 +39,12 @@ func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Da
 
 }
 
-func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (types.Datacenter, error) {
+func (service *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (types.Datacenter, error) {
 
-	url := dc.client.basePath + "/view/datacenter?datacenterId=" + id
+	url := service.client.basePath + "/view/datacenter?datacenterId=" + id
 	d := types.Datacenter{}
 
-	resp, err := dc.client.get(ctx, url, *dc.client.headers)
+	resp, err := service.client.get(ctx, url, *service.client.headers)
 	if err != nil {
 		return d, err
 	}
@@ -58,16 +58,16 @@ func (dc *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (t
 
 }
 
-func (dc *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter) error {
+func (service *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter) error {
 
-	url := dc.client.basePath + "/action/create/datacenter"
+	url := service.client.basePath + "/action/create/datacenter"
 	var tempDC types.Datacenter
 	if d.Name == "" {
 		err := errors.New("Datacenter name cannot be empty")
 		return err
 	}
 
-	resp, err := dc.client.post(ctx, url, d, *dc.client.headers)
+	resp, err := service.client.post(ctx, url, d, *service.client.headers)
 	if err != nil {
 		return err
 	}
