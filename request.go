@@ -23,18 +23,12 @@ type serverResponse struct {
 	reqURL     *url.URL
 }
 
-// head sends an http request to the docker API using the method HEAD.
-func (cli *ApiClient) head(ctx context.Context, url string, headers http.Header) (serverResponse, error) {
-	return cli.sendRequest(ctx, "HEAD", url, nil, headers)
-
-}
-
-// get sends an http request to the docker API using the method GET with a specific Go context.
+// get sends an http request using the method GET with a specific Go context.
 func (cli *ApiClient) get(ctx context.Context, url string, headers http.Header) (serverResponse, error) {
 	return cli.sendRequest(ctx, "GET", url, nil, headers)
 }
 
-// post sends an http request to the docker API using the method POST with a specific Go context.
+// post sends an http request the method POST with a specific Go context.
 func (cli *ApiClient) post(ctx context.Context, url string, obj interface{}, headers http.Header) (serverResponse, error) {
 	body, headers, err := encodeBody(obj, headers)
 	if err != nil {
@@ -47,7 +41,7 @@ func (cli *ApiClient) postRaw(ctx context.Context, url string, body io.Reader, h
 	return cli.sendRequest(ctx, "POST", url, body, headers)
 }
 
-// put sends an http request to the docker API using the method PUT.
+// put sends an http request using the method PUT.
 func (cli *ApiClient) put(ctx context.Context, url string, obj interface{}, headers http.Header) (serverResponse, error) {
 	body, headers, err := encodeBody(obj, headers)
 	if err != nil {
@@ -56,12 +50,7 @@ func (cli *ApiClient) put(ctx context.Context, url string, obj interface{}, head
 	return cli.sendRequest(ctx, "PUT", url, body, headers)
 }
 
-// putRaw sends an http request to the docker API using the method PUT.
-func (cli *ApiClient) putRaw(ctx context.Context, url string, body io.Reader, headers http.Header) (serverResponse, error) {
-	return cli.sendRequest(ctx, "PUT", url, body, headers)
-}
-
-// delete sends an http request to the docker API using the method DELETE.
+// delete sends an http request using the method DELETE.
 func (cli *ApiClient) delete(ctx context.Context, url string, headers http.Header) (serverResponse, error) {
 	return cli.sendRequest(ctx, "DELETE", url, nil, headers)
 }
