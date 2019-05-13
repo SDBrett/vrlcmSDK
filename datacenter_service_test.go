@@ -27,7 +27,7 @@ func getMockDatacenteres() []types.Datacenter {
 	return dcArray
 }
 
-func TestDatacenterAPIService_GetDatacenter(t *testing.T) {
+func TestDatacenterAPIService_GetAllDatacenters(t *testing.T) {
 
 	var ctx = context.Background()
 
