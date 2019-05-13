@@ -15,7 +15,7 @@ type ApiClient struct {
 	headers       *http.Header
 
 	DatacenterService *DatacenterAPIService
-	VcenterService *VcenterAPIService
+	VcenterService    *VcenterAPIService
 }
 
 // Defines services

@@ -7,8 +7,6 @@ import (
 	"net/http"
 )
 
-
-
 func GetDatacenterResponse(r *http.Response) (types.Datacenter, error) {
 
 	d := &types.Datacenter{}
@@ -28,6 +26,3 @@ func GetDatacenterResponse(r *http.Response) (types.Datacenter, error) {
 	return *d, nil
 
 }
-
-
-
