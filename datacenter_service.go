@@ -3,11 +3,14 @@ package vrlcmsdk
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/goharbor/harbor/src/common/utils/log"
 	"github.com/pkg/errors"
 	"github.com/sdbrett/vrlcmsdk/types"
 )
 
 type DatacenterAPIService service
+
 
 func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
 
@@ -22,6 +25,17 @@ func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Da
 
 	err = json.NewDecoder(resp.body).Decode(&d.Datacenter)
 	ensureReaderClosed(resp)
+
+	for x, i := range d.Datacenter{
+		id := i.ID
+		d.Datacenter[x], err = dc.GetDatacenter(ctx,id)
+		if err != nil{
+			log.Errorf("received error getting datacenter for datacenter id %s", id)
+			return d, err
+		}
+		d.Datacenter[x].ID = id
+		fmt.Printf(id)
+	}
 	return d, nil
 
 }
