@@ -41,6 +41,7 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 
 	c.setDefaultHeaders()
 	c.DatacenterService = &DatacenterAPIService{client: c}
+	c.VcenterService = &VcenterAPIService{client: c}
 
 	return *c
 }
