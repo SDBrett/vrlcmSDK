@@ -68,7 +68,6 @@ func (dc *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter)
 	}
 
 	resp, err := dc.client.post(ctx, url, d, *dc.client.headers)
-
 	if err != nil {
 		return err
 	}
