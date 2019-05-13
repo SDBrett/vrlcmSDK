@@ -29,7 +29,7 @@ func (dc *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Da
 		id := i.ID
 		d.Datacenter[x], err = dc.GetDatacenter(ctx, id)
 		if err != nil {
-			log.Println("received error getting datacenter for datacenter id %s", id)
+			log.Printf("received error getting datacenter for datacenter id %s", id)
 			return d, err
 		}
 		d.Datacenter[x].ID = id
