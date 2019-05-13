@@ -164,7 +164,7 @@ func (cli *ApiClient) checkResponseErr(serverResp serverResponse) error {
 		return errors.Wrap(err, "Error reading JSON")
 	}
 
-	return errors.Wrap(errors.New(errorMessage), "Error response from daemon")
+	return errors.Wrap(errors.New(errorMessage), "Error response from server")
 }
 
 func encodeData(data interface{}) (*bytes.Buffer, error) {
