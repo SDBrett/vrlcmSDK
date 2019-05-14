@@ -348,3 +348,88 @@ func TestDatacenterAPIService_Create(t *testing.T) {
 		}
 	})
 }
+
+func TestDatacenterAPIService_Delete(t *testing.T) {
+
+	var ctx = context.Background()
+	datacenterID := "2c551b23da979e75588bd59d7418b"
+	expectedURL := "127.0.0.1/lcm/api/db/inventory/datacenter/" + datacenterID
+
+	t.Run("Test successful datacenter deletion", func(t *testing.T) {
+
+		serverResponse := `{"datacenterName":"rewdsaR","city":"Bangalore","state":"Karnataka","country":"IN","longitude":"77.59369","documentVersion":1,"documentKind":"com:vmware:vrealize:lcm:nxinventory:document:datacenter:DataCenter","documentSelfLink":"/lcm/api/db/inventory/datacenter/2c551b23da979e75588bd59d7418b","documentUpdateTimeMicros":1557812363707001,"documentUpdateAction":"DELETE","documentExpirationTimeMicros":1557812363707000,"documentAuthPrincipalLink":"/core/authz/users/vLCMAdmin"}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "DELETE" {
+				return nil, fmt.Errorf("expected DELETE method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.DatacenterService.Delete(ctx, datacenterID)
+		if err != nil {
+			t.Errorf("expected no error when creating datacenter")
+		}
+
+	})
+
+	t.Run("Test failure on empty name for datacentre deletion", func(t *testing.T) {
+
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "DELETE" {
+				return nil, fmt.Errorf("expected DELETE method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+			}, nil
+		})
+
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.DatacenterService.Delete(ctx, "")
+		if err == nil {
+			t.Errorf("expected error to be thrown when no name provided")
+		}
+	})
+
+	t.Run("Test server response error for datacentre deletion", func(t *testing.T) {
+
+		creationResponse := `{"message":"datacenterName cannot be null","statusCode":400,"documentKind":"com:vmware:xenon:common:ServiceErrorResponse","errorCode":0}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "DELETE" {
+				return nil, fmt.Errorf("expected DELETE method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusBadGateway,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(creationResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.DatacenterService.Delete(ctx, datacenterID)
+		if err == nil {
+			t.Errorf("expected error to be thrown when no name provided")
+		}
+	})
+
+
+}

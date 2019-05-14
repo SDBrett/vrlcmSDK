@@ -11,6 +11,7 @@ import (
 
 type DatacenterAPIService service
 
+// Get all datacenter objects from vRLCM instance
 func (service *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
 
 	url := service.client.basePath + "/view/datacenter"
@@ -39,6 +40,7 @@ func (service *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (typ
 
 }
 
+// Get datacenter object from vRLCM instance
 func (service *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (types.Datacenter, error) {
 
 	url := service.client.basePath + "/view/datacenter?datacenterId=" + id
@@ -58,6 +60,7 @@ func (service *DatacenterAPIService) GetDatacenter(ctx context.Context, id strin
 
 }
 
+// Create new datacenter object on vRLCM instance
 func (service *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter) error {
 
 	url := service.client.basePath + "/action/create/datacenter"
@@ -82,4 +85,22 @@ func (service *DatacenterAPIService) Create(ctx context.Context, d *types.Datace
 
 	return nil
 
+}
+
+// Delete datacenter object from vRLCM instance
+func (service *DatacenterAPIService) Delete(ctx context.Context, id string) error {
+
+	url := service.client.Host + "/lcm/api/db/inventory/datacenter/" + id
+
+	if id == "" {
+		err := errors.New("Datacenter ID cannot be empty")
+		return err
+	}
+
+	_, err := service.client.delete(ctx, url, *service.client.headers)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
