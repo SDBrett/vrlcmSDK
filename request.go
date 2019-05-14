@@ -36,11 +36,12 @@ func (cli *ApiClient) post(ctx context.Context, url string, obj interface{}, hea
 	}
 	return cli.sendRequest(ctx, "POST", url, body, headers)
 }
-
+/*
 func (cli *ApiClient) postRaw(ctx context.Context, url string, body io.Reader, headers http.Header) (serverResponse, error) {
 	return cli.sendRequest(ctx, "POST", url, body, headers)
 }
-
+*/
+/*
 // put sends an http request using the method PUT.
 func (cli *ApiClient) put(ctx context.Context, url string, obj interface{}, headers http.Header) (serverResponse, error) {
 	body, headers, err := encodeBody(obj, headers)
@@ -49,12 +50,13 @@ func (cli *ApiClient) put(ctx context.Context, url string, obj interface{}, head
 	}
 	return cli.sendRequest(ctx, "PUT", url, body, headers)
 }
-
+*/
+/*
 // delete sends an http request using the method DELETE.
 func (cli *ApiClient) delete(ctx context.Context, url string, headers http.Header) (serverResponse, error) {
 	return cli.sendRequest(ctx, "DELETE", url, nil, headers)
 }
-
+*/
 func encodeBody(obj interface{}, headers http.Header) (io.Reader, http.Header, error) {
 	if obj == nil {
 		return nil, headers, nil
