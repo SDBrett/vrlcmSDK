@@ -100,3 +100,91 @@ func TestVcenterAPIService_Create(t *testing.T) {
 	})
 
 }
+
+func TestVcenterAPIService_Update(t *testing.T) {
+
+	var ctx = context.Background()
+	expectedURL := "127.0.0.1/lcm/api/v1/action/add/vc"
+
+	t.Run("Test successful vCenter update", func(t *testing.T) {
+
+		serverResponse := `{"id":"2c551b23da979e75588cb94147e9a","type":"VC_DATA_COLLECTION","state":null,"status":"SUBMITTED","isRetriable":null,"retryParameters":null}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "PATCH" {
+				return nil, fmt.Errorf("expected PATCH method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		newVcenter := types.Vcenter{Name: "TestDataCenter", Username: "admin@local.com", Password: "pass", DatacenterName: "dc1", Type: 3,}
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		request, err := c.VcenterService.Update(ctx, &newVcenter)
+		if err != nil {
+			t.Errorf("expected no error when updating datacenter")
+		}
+		if request.ID != "2c551b23da979e75588cb94147e9a" {
+			t.Errorf("expected ID 2c551b23da979e75588cb94147e9a, instead got %s", request.ID)
+		}
+	})
+
+	t.Run("Test server error response", func(t *testing.T) {
+
+		serverResponse := `{"message":"=Missing vCenter password.","messageId":"12704","statusCode":400,"documentKind":"com:vmware:xenon:common:ServiceErrorResponse","errorCode":0}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "PATCH" {
+				return nil, fmt.Errorf("expected PATCH method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		newVcenter := types.Vcenter{Name: "TestDataCenter", Username: "admin@local.com", Password: "", DatacenterName: "dc1", Type: 3,}
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		_, err := c.VcenterService.Update(ctx, &newVcenter)
+		if err == nil {
+			t.Errorf("expected error to be thrown when with server error response")
+		}
+	})
+
+	t.Run("Test bad JSON decoding ", func(t *testing.T) {
+
+		serverResponse := "TEST"
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "PATCH" {
+				return nil, fmt.Errorf("expected PATCH method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		newVcenter := types.Vcenter{Name: "TestDataCenter", Username: "admin@local.com", Password: "pass", DatacenterName: "dc1", Type: 3,}
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		_, err := c.VcenterService.Update(ctx, &newVcenter)
+		if err == nil {
+			t.Errorf("expected error to be thrown when decoding fails")
+		}
+	})
+
+}

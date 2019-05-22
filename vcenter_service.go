@@ -29,3 +29,24 @@ func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter)
 
 	return request, nil
 }
+
+
+func (service *VcenterAPIService) Update(ctx context.Context, vc *types.Vcenter) (types.Request, error) {
+
+	url := service.client.basePath + "/action/add/vc"
+	var request types.Request
+
+	resp, err := service.client.patch(ctx, url, vc, *service.client.headers)
+	if err != nil {
+		return request, err
+	}
+
+	err = json.NewDecoder(resp.body).Decode(&request)
+	if err != nil {
+		return request, err
+	}
+
+	ensureReaderClosed(resp)
+
+	return request, nil
+}
