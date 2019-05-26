@@ -16,6 +16,7 @@ type ApiClient struct {
 
 	DatacenterService *DatacenterAPIService
 	VcenterService    *VcenterAPIService
+	SettingsService *SettingsAPIService
 }
 
 // Defines services
@@ -42,6 +43,6 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 	c.setDefaultHeaders()
 	c.DatacenterService = &DatacenterAPIService{client: c}
 	c.VcenterService = &VcenterAPIService{client: c}
-
+	c.SettingsService = &SettingsAPIService{client: c}
 	return *c
 }
