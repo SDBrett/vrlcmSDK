@@ -30,8 +30,8 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 	c := &ApiClient{
 		AllowInsecure: ignoreSSL,
 		Host:          host,
-		basePath:      host + "/lcm/api/v1",
-		cmsPath:       host + "/cms/api/v1",
+		basePath:      host + "/lcm/api",
+		cmsPath:       host + "/cms/api",
 	}
 
 	if httpClient == nil {

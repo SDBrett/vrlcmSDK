@@ -12,7 +12,7 @@ type SettingsAPIService service
 // Set new root password
 func (service *SettingsAPIService) SetRootPassword(ctx context.Context, password string) error {
 
-	url := service.client.basePath + "/settings"
+	url := service.client.basePath + "/v1/settings"
 	body := types.RootPassword{RootPassword: password}
 
 	resp, err := service.client.post(ctx, url, body, *service.client.headers)
@@ -29,7 +29,7 @@ func (service *SettingsAPIService) SetRootPassword(ctx context.Context, password
 // Set new admin password
 func (service *SettingsAPIService) SetAdminPassword(ctx context.Context, password string) error {
 
-	url := service.client.basePath + "/settings"
+	url := service.client.basePath + "/v1/settings"
 	body := types.RootPassword{RootPassword: password}
 
 	resp, err := service.client.post(ctx, url, body, *service.client.headers)
@@ -46,7 +46,7 @@ func (service *SettingsAPIService) SetAdminPassword(ctx context.Context, passwor
 // Get LCM configuration settings
 func (service *SettingsAPIService) GetLcmConfigSettings(ctx context.Context) (types.ConfigSettings, error) {
 
-	url := service.client.Host + "/lcm/api/settings/lcmconfig"
+	url := service.client.basePath + "/settings/lcmconfig"
 	settings := types.ConfigSettings{}
 	resp, err := service.client.get(ctx, url, *service.client.headers)
 	if err != nil {
@@ -86,7 +86,7 @@ func (service *SettingsAPIService) GetNetworkStatus(ctx context.Context) (types.
 // Set new admin password
 func (service *SettingsAPIService) SetRestartSchedule(ctx context.Context, schedule types.RestartSchedule) error {
 
-	url := service.client.Host + "/lcm/api/maintenance/xserver-restart-config"
+	url := service.client.basePath + "/maintenance/xserver-restart-config"
 
 	resp, err := service.client.post(ctx, url, schedule, *service.client.headers)
 	if err != nil {

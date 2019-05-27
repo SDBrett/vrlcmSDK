@@ -10,7 +10,7 @@ import (
 // Adds auth token string to the ApiClient
 func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 
-	url := cli.basePath + "/login"
+	url := cli.basePath + "/v1/login"
 	body := types.LoginBody{Username: u, Password: p}
 	// body := CreateLoginRequestBody(u, p)
 
@@ -33,7 +33,7 @@ func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 // Performs logout action against vRLCM server
 func (cli *ApiClient) Logout(ctx context.Context) error {
 
-	url := cli.basePath + "/logout"
+	url := cli.basePath + "/v1/logout"
 
 	_, err := cli.post(ctx, url, nil, *cli.headers)
 	if err != nil {

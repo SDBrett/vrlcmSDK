@@ -12,7 +12,7 @@ type VcenterAPIService service
 // Create Vcenter server object, returns request object
 func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter) (types.Request, error) {
 
-	url := service.client.basePath + "/action/add/vc"
+	url := service.client.basePath + "/v1/action/add/vc"
 	var request types.Request
 
 	resp, err := service.client.post(ctx, url, vc, *service.client.headers)
@@ -33,7 +33,7 @@ func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter)
 
 func (service *VcenterAPIService) Update(ctx context.Context, vc *types.Vcenter) (types.Request, error) {
 
-	url := service.client.basePath + "/action/add/vc"
+	url := service.client.basePath + "/v1/action/add/vc"
 	var request types.Request
 
 	resp, err := service.client.patch(ctx, url, vc, *service.client.headers)

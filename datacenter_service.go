@@ -14,7 +14,7 @@ type DatacenterAPIService service
 // Get all datacenter objects from vRLCM instance
 func (service *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (types.Datacenters, error) {
 
-	url := service.client.basePath + "/view/datacenter"
+	url := service.client.basePath + "/v1/view/datacenter"
 	d := types.Datacenters{}
 
 	resp, err := service.client.get(ctx, url, *service.client.headers)
@@ -43,7 +43,7 @@ func (service *DatacenterAPIService) GetAllDatacenters(ctx context.Context) (typ
 // Get datacenter object from vRLCM instance
 func (service *DatacenterAPIService) GetDatacenter(ctx context.Context, id string) (types.Datacenter, error) {
 
-	url := service.client.basePath + "/view/datacenter?datacenterId=" + id
+	url := service.client.basePath + "/v1/view/datacenter?datacenterId=" + id
 	d := types.Datacenter{}
 
 	resp, err := service.client.get(ctx, url, *service.client.headers)
@@ -63,7 +63,7 @@ func (service *DatacenterAPIService) GetDatacenter(ctx context.Context, id strin
 // Create new datacenter object on vRLCM instance
 func (service *DatacenterAPIService) Create(ctx context.Context, d *types.Datacenter) error {
 
-	url := service.client.basePath + "/action/create/datacenter"
+	url := service.client.basePath + "/v1/action/create/datacenter"
 	var tempDC types.Datacenter
 	if d.Name == "" {
 		err := errors.New("Datacenter name cannot be empty")
