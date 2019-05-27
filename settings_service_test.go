@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/sdbrett/vrlcmsdk/types"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -295,6 +296,91 @@ func TestSettingsAPIService_SetAdminPassword(t *testing.T) {
 		c := NewApiClient("127.0.0.1", true, cli)
 
 		err := c.SettingsService.SetAdminPassword(ctx, newPassword)
+		if err == nil {
+			t.Errorf("expected error to be thrown when with server error response")
+		}
+	})
+
+}
+
+func TestSettingsAPIService_SetRestartSchedule(t *testing.T) {
+
+	var ctx = context.Background()
+	expectedURL := "127.0.0.1/lcm/api/maintenance/xserver-restart-config"
+
+	t.Run("Test successful setting restart schedule", func(t *testing.T) {
+
+		serverResponse := `{"day":"1","hour":"16","weeklyServerRestartEnable":true}`
+		schedule := types.RestartSchedule{WeeklyServerRestartEnable: true, Day: "1", Hour: "14"}
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetRestartSchedule(ctx, schedule)
+		if err != nil {
+			t.Errorf("expected no error when setting restart schedule")
+		}
+	})
+
+	t.Run("Test successful disable restart schedule", func(t *testing.T) {
+
+		serverResponse := `{"day":"","hour":"","weeklyServerRestartEnable":false}`
+		schedule := types.RestartSchedule{WeeklyServerRestartEnable: false, Day: "", Hour: ""}
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetRestartSchedule(ctx, schedule)
+		if err != nil {
+			t.Errorf("expected no error when disabling restart schedule")
+		}
+	})
+
+	t.Run("Test server error response", func(t *testing.T) {
+
+		serverResponse := `{"message":"com.google.gson.stream.MalformedJsonException: Unterminated object at line 3 column 6 path $.null","statusCode":500,"documentKind":"com:vmware:xenon:common:ServiceErrorResponse","errorCode":0}`
+		schedule := types.RestartSchedule{WeeklyServerRestartEnable: false, Day: "", Hour: ""}
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusInternalServerError,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetRestartSchedule(ctx, schedule)
 		if err == nil {
 			t.Errorf("expected error to be thrown when with server error response")
 		}

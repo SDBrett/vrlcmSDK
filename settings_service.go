@@ -9,20 +9,11 @@ import (
 // LCM Settings API service
 type SettingsAPIService service
 
-
-type SshPassword struct {
-	SshUserPassword string `json:"sshuserPassword"`
-}
-
-type rootPassword struct {
-	RootPassword string `json:"rootPassword"`
-}
-
 // Set new root password
 func (service *SettingsAPIService) SetRootPassword(ctx context.Context, password string) error {
 
 	url := service.client.basePath + "/settings"
-	body := rootPassword{RootPassword: password}
+	body := types.RootPassword{RootPassword: password}
 
 	resp, err := service.client.post(ctx, url, body, *service.client.headers)
 	if err != nil {
@@ -39,7 +30,7 @@ func (service *SettingsAPIService) SetRootPassword(ctx context.Context, password
 func (service *SettingsAPIService) SetAdminPassword(ctx context.Context, password string) error {
 
 	url := service.client.basePath + "/settings"
-	body := rootPassword{RootPassword: password}
+	body := types.RootPassword{RootPassword: password}
 
 	resp, err := service.client.post(ctx, url, body, *service.client.headers)
 	if err != nil {
@@ -89,5 +80,21 @@ func (service *SettingsAPIService) GetNetworkStatus(ctx context.Context) (types.
 	ensureReaderClosed(resp)
 
 	return settings, nil
+
+}
+
+// Set new admin password
+func (service *SettingsAPIService) SetRestartSchedule(ctx context.Context, schedule types.RestartSchedule) error {
+
+	url := service.client.Host + "/lcm/api/maintenance/xserver-restart-config"
+
+	resp, err := service.client.post(ctx, url, schedule, *service.client.headers)
+	if err != nil {
+		return err
+	}
+
+	ensureReaderClosed(resp)
+
+	return nil
 
 }

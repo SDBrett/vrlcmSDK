@@ -1,12 +1,9 @@
 package types
 
-
-
 type ConfigSettings struct {
 	SshEnabled       string `json:"sshEnabled, omitempty"`
 	TelemetryEnabled string `json:"telemetryEnabled, omitempty"`
 }
-
 
 type ActiveDirectorySettings struct {
 	AdName                 string `json:"adName"`
@@ -31,3 +28,19 @@ type MyVMwareSettings struct {
 	Password string `json:"password"`
 }
 
+type SshPassword struct {
+	SshUserPassword string `json:"sshuserPassword"`
+}
+
+type RootPassword struct {
+	RootPassword string `json:"rootPassword"`
+}
+
+// LCM appliance restart schedule
+type RestartSchedule struct {
+	WeeklyServerRestartEnable bool `json:"weeklyServerRestartEnable"`
+	// 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday, 7 = Sunday
+	Day string `json:"day"`
+	// Hour for appliance to restart. 04 = 4 AM, 16 = 4 PM
+	Hour string `json:"hour"`
+}
