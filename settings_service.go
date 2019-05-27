@@ -6,8 +6,9 @@ import (
 	"github.com/sdbrett/vrlcmsdk/types"
 )
 
-// Vcenter API service
+// LCM Settings API service
 type SettingsAPIService service
+
 
 type SshPassword struct {
 	SshUserPassword string `json:"sshuserPassword"`
