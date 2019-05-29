@@ -79,7 +79,7 @@ func TestDatacenterAPIService_GetAllDatacenters(t *testing.T) {
 
 		for dc, v := range dataCenters.Datacenter {
 			if v.ID == "" {
-				t.Errorf("expected ID field to have value, found empty value at pos %d", dc)
+				t.Errorf("expected RequestID field to have value, found empty value at pos %d", dc)
 			}
 		}
 	})
@@ -202,7 +202,7 @@ func TestDatacenterAPIService_GetDatacenter(t *testing.T) {
 		}
 
 		if dataCenter.ID != "2c551b23da979e755885a0b8be910" {
-			t.Errorf("expected ID field to equal 2c551b23da979e755885a0b8be910, instead got %s", dataCenter.ID)
+			t.Errorf("expected RequestID field to equal 2c551b23da979e755885a0b8be910, instead got %s", dataCenter.ID)
 		}
 	})
 
@@ -260,7 +260,7 @@ func TestDatacenterAPIService_Create(t *testing.T) {
 			t.Errorf("expected no error when creating datacenter")
 		}
 		if newDatacenter.ID != "2c551b23da979e75588bd59d7418b" {
-			t.Errorf("incorrect ID returned")
+			t.Errorf("incorrect RequestID returned")
 		}
 		if newDatacenter.Name != "TestDataCenter" {
 			t.Errorf("expected new datacenter name TestDataCenter, received %s", newDatacenter.Name)

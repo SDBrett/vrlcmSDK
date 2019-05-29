@@ -10,10 +10,10 @@ import (
 type VcenterAPIService service
 
 // Create Vcenter server object, returns request object
-func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter) (types.Request, error) {
+func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter) (types.VCenterRequest, error) {
 
 	url := service.client.basePath + "/v1/action/add/vc"
-	var request types.Request
+	var request types.VCenterRequest
 
 	resp, err := service.client.post(ctx, url, vc, *service.client.headers)
 	if err != nil {
@@ -31,10 +31,10 @@ func (service *VcenterAPIService) Create(ctx context.Context, vc *types.Vcenter)
 }
 
 
-func (service *VcenterAPIService) Update(ctx context.Context, vc *types.Vcenter) (types.Request, error) {
+func (service *VcenterAPIService) Update(ctx context.Context, vc *types.Vcenter) (types.VCenterRequest, error) {
 
 	url := service.client.basePath + "/v1/action/add/vc"
-	var request types.Request
+	var request types.VCenterRequest
 
 	resp, err := service.client.patch(ctx, url, vc, *service.client.headers)
 	if err != nil {

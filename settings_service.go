@@ -77,13 +77,14 @@ func (service *SettingsAPIService) GetNetworkStatus(ctx context.Context) (types.
 	if err != nil {
 		return settings, err
 	}
+
 	ensureReaderClosed(resp)
 
 	return settings, nil
 
 }
 
-// Set new admin password
+// Set restart schedule
 func (service *SettingsAPIService) SetRestartSchedule(ctx context.Context, schedule types.RestartSchedule) error {
 
 	url := service.client.basePath + "/maintenance/xserver-restart-config"

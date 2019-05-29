@@ -93,7 +93,7 @@ func (service *DatacenterAPIService) Delete(ctx context.Context, id string) erro
 	url := service.client.Host + "/lcm/api/db/inventory/datacenter/" + id
 
 	if id == "" {
-		err := errors.New("Datacenter ID cannot be empty")
+		err := errors.New("Datacenter RequestID cannot be empty")
 		return err
 	}
 

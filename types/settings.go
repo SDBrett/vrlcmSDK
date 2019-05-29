@@ -38,9 +38,7 @@ type RootPassword struct {
 
 // LCM appliance restart schedule
 type RestartSchedule struct {
-	WeeklyServerRestartEnable bool `json:"weeklyServerRestartEnable"`
-	// 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday, 7 = Sunday
-	Day string `json:"day"`
-	// Hour for appliance to restart. 04 = 4 AM, 16 = 4 PM
-	Hour string `json:"hour"`
+	WeeklyServerRestartEnable bool   `json:"weeklyServerRestartEnable"`
+	Day                       string `json:"day"`  // 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday, 7 = Sunday
+	Hour                      string `json:"hour"` // Hour for appliance to restart. 04 = 4 AM, 16 = 4 PM
 }

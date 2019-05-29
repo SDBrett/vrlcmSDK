@@ -9,3 +9,5 @@ type Vcenter struct {
 	Datacenters         string `json:"vCDataCenteres"`
 	TemplateCustomSpecs string `json:"templateCustomSpecs"`
 }
+
+

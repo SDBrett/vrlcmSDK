@@ -42,8 +42,8 @@ func TestVcenterAPIService_Create(t *testing.T) {
 		if err != nil {
 			t.Errorf("expected no error when creating datacenter")
 		}
-		if request.ID != "2c551b23da979e75588cb94147e9a" {
-			t.Errorf("expected ID 2c551b23da979e75588cb94147e9a, instead got %s", request.ID)
+		if request.RequestID != "2c551b23da979e75588cb94147e9a" {
+			t.Errorf("expected RequestID 2c551b23da979e75588cb94147e9a, instead got %s", request.RequestID)
 		}
 	})
 
@@ -130,8 +130,8 @@ func TestVcenterAPIService_Update(t *testing.T) {
 		if err != nil {
 			t.Errorf("expected no error when updating datacenter")
 		}
-		if request.ID != "2c551b23da979e75588cb94147e9a" {
-			t.Errorf("expected ID 2c551b23da979e75588cb94147e9a, instead got %s", request.ID)
+		if request.RequestID != "2c551b23da979e75588cb94147e9a" {
+			t.Errorf("expected RequestID 2c551b23da979e75588cb94147e9a, instead got %s", request.RequestID)
 		}
 	})
 
