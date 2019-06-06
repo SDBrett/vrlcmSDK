@@ -36,6 +36,10 @@ type RootPassword struct {
 	RootPassword string `json:"rootPassword"`
 }
 
+type ConfigDriftInterval struct {
+	IntervalMinutes int `json:"intervalMinutes"`
+}
+
 // LCM appliance restart schedule
 type RestartSchedule struct {
 	WeeklyServerRestartEnable bool   `json:"weeklyServerRestartEnable"`

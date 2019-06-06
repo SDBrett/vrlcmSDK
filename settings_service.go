@@ -3,6 +3,7 @@ package vrlcmsdk
 import (
 	"context"
 	"encoding/json"
+	"github.com/pkg/errors"
 	"github.com/sdbrett/vrlcmsdk/types"
 )
 
@@ -97,5 +98,50 @@ func (service *SettingsAPIService) SetRestartSchedule(ctx context.Context, sched
 	ensureReaderClosed(resp)
 
 	return nil
+
+}
+
+// Set configuration drift check interval
+func (service *SettingsAPIService) SetConfigDriftInterval(ctx context.Context, intervalMinutes int) error {
+
+	url := service.client.basePath + "/config-drift/drift-task"
+
+	if intervalMinutes > 1440 || intervalMinutes < 60 {
+		return errors.New("drift interval must be between 60 and 1440")
+	}
+
+	body := types.ConfigDriftInterval{IntervalMinutes: intervalMinutes}
+
+	resp, err := service.client.post(ctx, url, body, *service.client.headers)
+	if err != nil {
+		return err
+	}
+
+	ensureReaderClosed(resp)
+
+	return nil
+
+}
+
+// Get configuration drift check interval
+func (service *SettingsAPIService) GetConfigDriftInterval(ctx context.Context) (types.ConfigDriftInterval, error) {
+
+	url := service.client.basePath + "/config-drift/drift-task"
+	driftInterval := types.ConfigDriftInterval{}
+
+	resp, err := service.client.get(ctx, url, *service.client.headers)
+	if err != nil {
+		return driftInterval, err
+	}
+
+
+
+	err = json.NewDecoder(resp.body).Decode(&driftInterval)
+	if err != nil {
+		return driftInterval, err
+	}
+	ensureReaderClosed(resp)
+
+	return driftInterval, nil
 
 }

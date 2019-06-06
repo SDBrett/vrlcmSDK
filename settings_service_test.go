@@ -387,3 +387,170 @@ func TestSettingsAPIService_SetRestartSchedule(t *testing.T) {
 	})
 
 }
+
+func TestSettingsAPIService_SetConfigDriftInterval(t *testing.T) {
+
+	var ctx = context.Background()
+	expectedURL := "127.0.0.1/lcm/api/config-drift/drift-task"
+
+	t.Run("Test successful setting drift interval schedule", func(t *testing.T) {
+
+		serverResponse := `{"intervalMinutes":1440,"documentVersion":0,"documentUpdateTimeMicros":0,"documentExpirationTimeMicros":0}`
+
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetConfigDriftInterval(ctx, 60)
+		if err != nil {
+			t.Errorf("expected no error when setting setting drift interval")
+		}
+	})
+
+	t.Run("Test invalid interval value", func(t *testing.T) {
+
+		serverResponse := `{"intervalMinutes":3,"documentVersion":0,"documentUpdateTimeMicros":0,"documentExpirationTimeMicros":0}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetConfigDriftInterval(ctx, 3)
+		if err == nil {
+			t.Errorf("expected error when setting interval, received no error")
+		}
+	})
+
+	t.Run("Test server error response", func(t *testing.T) {
+
+		serverResponse := `{}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "POST" {
+				return nil, fmt.Errorf("expected POST method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusForbidden,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		err := c.SettingsService.SetConfigDriftInterval(ctx, 600)
+		if err == nil {
+			t.Errorf("expected server error when setting interval, received no error")
+		}
+	})
+}
+
+func TestSettingsAPIService_GetConfigDriftInterval(t *testing.T) {
+
+	var ctx = context.Background()
+	expectedURL := "127.0.0.1/lcm/api/config-drift/drift-task"
+
+	t.Run("Test successful getting drift interval schedule", func(t *testing.T) {
+
+		serverResponse := `{"intervalMinutes":1440,"documentVersion":0,"documentUpdateTimeMicros":0,"documentExpirationTimeMicros":0}`
+
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "GET" {
+				return nil, fmt.Errorf("expected GET method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		driftInterval, err := c.SettingsService.GetConfigDriftInterval(ctx)
+		if err != nil {
+			t.Errorf("expected no error when getting setting drift interval")
+		}
+		if driftInterval.IntervalMinutes != 1440 {
+			t.Errorf("expected drift intervale of 1440, received %d", driftInterval.IntervalMinutes)
+		}
+	})
+
+	t.Run("Test json decoder interval value", func(t *testing.T) {
+
+		serverResponse := `TEST`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "GET" {
+				return nil, fmt.Errorf("expected GET method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		_, err := c.SettingsService.GetConfigDriftInterval(ctx)
+		if err == nil {
+			t.Errorf("expected error when getting interval, received no error")
+		}
+	})
+
+	t.Run("Test server error response", func(t *testing.T) {
+
+		serverResponse := `{}`
+		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
+			if !strings.HasPrefix(req.URL.Path, expectedURL) {
+				return nil, fmt.Errorf("expected URL '%s', got '%s'", expectedURL, req.URL)
+			}
+			if req.Method != "GET" {
+				return nil, fmt.Errorf("expected GET method, got %s", req.Method)
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusForbidden,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(serverResponse))),
+			}, nil
+		})
+
+		c := NewApiClient("127.0.0.1", true, cli)
+
+		_, err := c.SettingsService.GetConfigDriftInterval(ctx)
+		if err == nil {
+			t.Errorf("expected server error when getting interval, received no error")
+		}
+	})
+}
