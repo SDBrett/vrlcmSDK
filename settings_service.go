@@ -134,8 +134,6 @@ func (service *SettingsAPIService) GetConfigDriftInterval(ctx context.Context) (
 		return driftInterval, err
 	}
 
-
-
 	err = json.NewDecoder(resp.body).Decode(&driftInterval)
 	if err != nil {
 		return driftInterval, err
