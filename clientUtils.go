@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (cli *ApiClient) setDefaultHeaders() {
+func (cli *ApiClient) SetDefaultHeaders() {
 
 	h := &http.Header{}
 	h.Add("Accept", "application/json")
@@ -13,8 +13,8 @@ func (cli *ApiClient) setDefaultHeaders() {
 	cli.headers = h
 }
 
-func (cli *ApiClient) addAuthHeader() {
+func (cli *ApiClient) AddAuthHeader() {
 
-	cli.headers.Add("x-xenon-auth-token", cli.token)
+	cli.headers.Add("x-xenon-auth-Token", cli.Token)
 
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // Performs authentication function with vRLCM server
-// Adds auth token string to the ApiClient
+// Adds auth Token string to the ApiClient
 func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 
 	url := cli.basePath + "/v1/login"
@@ -24,8 +24,8 @@ func (cli *ApiClient) Login(ctx context.Context, u, p string) error {
 	if err != nil {
 		return err
 	}
-	cli.token = loginToken.Token
-	cli.addAuthHeader()
+	cli.Token = loginToken.Token
+	cli.AddAuthHeader()
 
 	return nil
 }

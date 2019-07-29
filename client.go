@@ -8,7 +8,7 @@ import (
 type ApiClient struct {
 	basePath      string
 	cmsPath       string
-	token         string
+	Token         string
 	AllowInsecure bool
 	Host          string
 	httpClient    *http.Client
@@ -40,7 +40,7 @@ func NewApiClient(host string, ignoreSSL bool, httpClient *http.Client) ApiClien
 		c.httpClient = httpClient
 	}
 
-	c.setDefaultHeaders()
+	c.SetDefaultHeaders()
 	c.DatacenterService = &DatacenterAPIService{client: c}
 	c.VcenterService = &VcenterAPIService{client: c}
 	c.SettingsService = &SettingsAPIService{client: c}

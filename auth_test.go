@@ -17,7 +17,7 @@ func TestApiClient_Login(t *testing.T) {
 
 	t.Run("Test successful vCenter login", func(t *testing.T) {
 
-		serverResponse := `{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4biIsInN1YiI6Ii9jb3JlL2F1dGh6L3VzZXJzL3ZMQ01BZG1pbiIsImV4cCI6NDcxMTc4ODMxN30.LBFSBgdwr9T2xh0qD0ElcfqpWozP_C6SNmXvWG9vz44"}`
+		serverResponse := `{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4biIsInN1YiI6Ii9jb3JlL2F1dGh6L3VzZXJzL3ZMQ01BZG1pbiIsImV4cCI6NDcxMTc4ODMxN30.LBFSBgdwr9T2xh0qD0ElcfqpWozP_C6SNmXvWG9vz44"}`
 		expectedToken := "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4biIsInN1YiI6Ii9jb3JlL2F1dGh6L3VzZXJzL3ZMQ01BZG1pbiIsImV4cCI6NDcxMTc4ODMxN30.LBFSBgdwr9T2xh0qD0ElcfqpWozP_C6SNmXvWG9vz44"
 
 		cli := newMockClient(func(req *http.Request) (*http.Response, error) {
@@ -40,8 +40,8 @@ func TestApiClient_Login(t *testing.T) {
 		if err != nil {
 			t.Errorf("expected no error during login")
 		}
-		if c.token != expectedToken {
-			t.Errorf("expected token code did not match result")
+		if c.Token != expectedToken {
+			t.Errorf("expected Token code did not match result")
 		}
 	})
 
